@@ -1,5 +1,6 @@
 package com.ll.restapi.domain.article.article.controller;
 
+import com.ll.restapi.domain.article.article.dto.ArticleDto;
 import com.ll.restapi.domain.article.article.entity.Article;
 import com.ll.restapi.domain.article.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,11 @@ public class ApiV1ArticleController {
     private final ArticleService articleService;
 
     @GetMapping("")
-    public List< Article > getArticles() {
-        return articleService.findAll();
+    public List< ArticleDto > getArticles() {
+        return articleService
+                .findAll()
+                .stream()
+                .map(article -> new ArticleDto(article))
+                .toList();
     }
 }
