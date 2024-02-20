@@ -3,6 +3,7 @@ package com.ll.restapi.domain.article.article.controller;
 import com.ll.restapi.domain.article.article.dto.ArticleDto;
 import com.ll.restapi.domain.article.article.entity.Article;
 import com.ll.restapi.domain.article.article.service.ArticleService;
+import com.ll.restapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class ApiV1ArticleController {
     }
 
     @GetMapping("")
-    public GetArticleResponseBody getArticles() {
-        return new GetArticleResponseBody(articleService.findByOrderByIdDesc());
+    public RsData<GetArticleResponseBody> getArticles() {
+        return RsData.of("200", "성공", new GetArticleResponseBody(articleService.findByOrderByIdDesc()));
     }
 }
