@@ -34,6 +34,12 @@ public class ApiV1ArticleController {
 
     @GetMapping("")
     public RsData<GetArticleResponseBody> getArticles() {
-        return RsData.of("200", "성공", new GetArticleResponseBody(articleService.findByOrderByIdDesc()));
+        return RsData.of(
+                "200",
+                "성공",
+                new GetArticleResponseBody(
+                        articleService.findByOrderByIdDesc()
+                )
+        );
     }
 }
