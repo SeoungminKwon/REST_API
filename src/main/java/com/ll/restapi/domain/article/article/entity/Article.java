@@ -1,5 +1,6 @@
 package com.ll.restapi.domain.article.article.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.restapi.domain.member.member.entity.Member;
 import com.ll.restapi.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
@@ -20,6 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 @ToString(callSuper = true) //부모클래스의 toString도 메서드 결과에 포함시킴
 public class Article extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore //JSON 직렬화 시 해당 필드 무시
     private Member author;
     private String title;
     private String body;

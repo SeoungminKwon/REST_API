@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class ArticleService {
                 .build();
         articleRepository.save(article);
 
-        return RsData.of("200", "%번 게시글이 작성되었습니다.".formatted(article.getId()), article);
+        return RsData.of("200", "%d번 게시글이 작성되었습니다.".formatted(article.getId()), article);
     }
 
     public Optional< Article > findById(Long id) {
@@ -40,4 +41,7 @@ public class ArticleService {
         article.setBody(body);
     }
 
+    public List< Article > findAll() {
+        return articleRepository.findAll();
+    }
 }
