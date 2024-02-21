@@ -22,7 +22,7 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
     @Column(unique = true)
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private String apikey;
 
     public String getName(){
