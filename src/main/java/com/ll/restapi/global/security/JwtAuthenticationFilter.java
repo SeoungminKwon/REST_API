@@ -28,8 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @SneakyThrows //해당 메서드에서 체크된 예외를 선언하지 않고, 던지게 해줌
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String username = request.getHeader("username");
+        String password = request.getHeader("password");
 
         if (username != null && password != null) {
             Member member = memberService.findByUsername(username).get();
