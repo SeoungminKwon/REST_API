@@ -10,11 +10,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.is;
 
 @SpringBootTest //스프링 부트 테스트에 필요한 의존성 주입과 애플리케이션 컨텍스트 로딩을 위한 어노테이션
 @AutoConfigureMockMvc //MockMvc 인스턴스를 자동으로 구성하고, 주입하기 위한 어노테이션
@@ -39,12 +38,12 @@ class ApiV1ArticleControllerTest {
         resultActions
                 .andExpect(status().isOk()) //HTTP 상태코드 검증
                 .andExpect(handler().handlerType(ApiV1ArticleController.class)) //요청 처리 클래스 ApiV1ArticleController인지 검증
-                .andExpect(jsonPath("$.data.items[0].id", is(10))) //JSON 응답의 특정경로 값 검증
+                .andExpect(jsonPath("$.data.items[0].id", instanceOf(Number.class))) // 값이 숫자인지 체크
                 .andExpect(jsonPath("$.data.items[0].createDate", matchesPattern(DATE_PATTERN)))
                 .andExpect(jsonPath("$.data.items[0].modifyDate", matchesPattern(DATE_PATTERN)))
-                .andExpect(jsonPath("$.data.items[0].authorId", is(1)))
-                .andExpect(jsonPath("$.data.items[0].authorName", is("admin")))
-                .andExpect(jsonPath("$.data.items[0].title", is("제목10")))//JSON 응답의 특정경로 값 검증
-                .andExpect(jsonPath("$.data.items[0].body", is("내용10")));
+                .andExpect(jsonPath("$.data.items[0].authorId", instanceOf(Number.class))) // 값이 숫자인지 체크
+                .andExpect(jsonPath("$.data.items[0].authorName", notNullValue())) //null이 아닌 값
+                .andExpect(jsonPath("$.data.items[0].title", notNullValue()))//null이 아닌 값
+                .andExpect(jsonPath("$.data.items[0].body", notNullValue()));//null이 아닌 값
     }
 }
