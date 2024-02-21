@@ -155,7 +155,7 @@ public class ApiV1ArticleController {
         //비로그인시 principal에 어떤 데이터가 들어갈까?
         Optional.ofNullable(principal)
                 .ifPresentOrElse(
-                        p -> System.out.println("로그인 : " + p.getName()),
+                        p -> System.out.println("로그인 : " + p.getName()), //Jwt필터에서 강제로 User넣으면 이걸로 진행
                         () -> System.out.println("비로그인"));
 
 
