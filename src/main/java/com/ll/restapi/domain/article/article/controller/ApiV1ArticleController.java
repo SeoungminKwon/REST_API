@@ -3,9 +3,12 @@ package com.ll.restapi.domain.article.article.controller;
 import com.ll.restapi.domain.article.article.dto.ArticleDto;
 import com.ll.restapi.domain.article.article.entity.Article;
 import com.ll.restapi.domain.article.article.service.ArticleService;
+import com.ll.restapi.domain.member.member.entity.Member;
+import com.ll.restapi.global.rq.Rq;
 import com.ll.restapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ApiV1ArticleController {
     private final ArticleService articleService;
+    private final Rq rq;
 
     @Getter
     public static class GetArticlesResponseBody {
@@ -86,6 +90,72 @@ public class ApiV1ArticleController {
                 new RemoveArticleResponseBody(article)
         );
 
+    }
+
+    @Getter
+    @Setter
+    //추후 validation 추가 가능
+    public static class ModifyArticleRequestBody{
+        private String title;
+        private String body;
+    }
+
+    @Getter
+    public static class ModifyArticleResponseBody{
+        private final ArticleDto item;
+
+        public ModifyArticleResponseBody(Article article) {
+            this.item = new ArticleDto(article);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public RsData<ModifyArticleResponseBody> modifyArticle(
+            @PathVariable long id,
+            @RequestBody ModifyArticleRequestBody body
+    ) {
+        Article article = articleService.findById(id).get();
+        articleService.modify(article, body.title, body.body);
+
+        return RsData.of(
+                "200",
+                "성공",
+                new ModifyArticleResponseBody(
+                        article
+                )
+        );
+    }
+
+    @Getter
+    @Setter
+    public static class WriteArticleRequestBody{
+        private String title;
+        private String body;
+    }
+
+    @Getter
+    public static class WriteArticleResponseBody{
+        private final ArticleDto item;
+
+        public WriteArticleResponseBody(Article article) {
+            this.item = new ArticleDto(article);
+        }
+    }
+
+    @PostMapping("")
+    public RsData< WriteArticleResponseBody > writeArticle(
+            @RequestBody WriteArticleRequestBody body
+    ) {
+        Member member = rq.getMember(); //현제는 rq.getMember가 1L로 고정 (추후 변경 예정)
+        Article article = articleService.write(member, body.title, body.body).getData();
+
+        return RsData.of(
+                "200",
+                "성공",
+                new WriteArticleResponseBody(
+                        article
+                )
+        );
     }
 
 }
