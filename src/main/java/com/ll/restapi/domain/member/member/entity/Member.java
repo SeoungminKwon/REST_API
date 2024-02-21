@@ -23,7 +23,7 @@ public class Member extends BaseEntity {
     private String nickname;
     @Column(unique = true)
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    private String apikey;
+    private String apiKey;
 
     public String getName(){
         return username;
