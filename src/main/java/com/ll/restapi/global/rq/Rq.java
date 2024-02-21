@@ -26,4 +26,9 @@ public class Rq {
         }
         return member;
     }
+
+    public String getHeader(String name) {
+        return request.getHeader(name);
+    }
+
 }

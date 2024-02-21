@@ -8,6 +8,7 @@ import com.ll.restapi.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,7 @@ public class ApiV1MemberController {
     public RsData< LoginResponseBody > login(
             @RequestBody LoginRequestBody requestBody
     ) {
-        RsData<Member> checkRs = memberService.checkUsernameAndPassword(
+        RsData< Member > checkRs = memberService.checkUsernameAndPassword(
                 requestBody.getUsername(),
                 requestBody.getPassword()
         );
@@ -55,6 +56,20 @@ public class ApiV1MemberController {
                 new LoginResponseBody(
                         member
                 )
+        );
+    }
+
+    //전 기기 로그아웃
+    @PreAuthorize("isAuthenticated()") // JwtAuthenticationFilter에서 시큐리티에 auth 객체를 넣어줘서 작동함
+    @PostMapping("/apiKey")
+    //타입의 유연성을 확보하기 위해서 ?(와일드 카드)를 작성함
+    public RsData< ? > regenApiKey() {
+        Member member = rq.getMember();
+
+        memberService.regenApiKey(member);
+        return RsData.of(
+                "200",
+                "해당 키가 재생성 되었습니다."
         );
     }
 }

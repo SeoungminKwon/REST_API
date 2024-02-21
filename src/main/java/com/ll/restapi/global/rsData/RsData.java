@@ -1,6 +1,5 @@
 package com.ll.restapi.global.rsData;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,15 +18,20 @@ public class RsData<T> {
         return new RsData<>(resultCode, msg, data, statusCode);
     }
 
+    public < T > RsData< T > of(T data) {
+        return RsData.of(resultCode, msg, data);
+    }
+
+    public static RsData< ? > of(String resultCode, String msg) {
+        return of(resultCode, msg, null);
+    }
+
+
     public boolean isSuccess(){
         return statusCode >= 200 && statusCode < 400;
     }
 
     public boolean isFail(){
         return !isSuccess();
-    }
-
-    public < T > RsData< T > of(T data) {
-        return RsData.of(resultCode, msg, data);
     }
 }
