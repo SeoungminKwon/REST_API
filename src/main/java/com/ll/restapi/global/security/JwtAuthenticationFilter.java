@@ -28,15 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @SneakyThrows //해당 메서드에서 체크된 예외를 선언하지 않고, 던지게 해줌
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String username = request.getHeader("username");
-        String password = request.getHeader("password");
+        String apiKey = request.getHeader("X-ApiKey"); //사용자가 정의한 헤더는 X-??? 이런식으로 작성하는 것이 관례임
 
-        if (username != null && password != null) {
-            Member member = memberService.findByUsername(username).get();
-
-            if (!passwordEncoder.matches(password, member.getPassword())) {
-                throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-            }
+        if (apiKey != null) {
+            Member member = memberService.findByApiKey(apiKey).get();
 
             User user = new User(
                     member.getUsername(),
