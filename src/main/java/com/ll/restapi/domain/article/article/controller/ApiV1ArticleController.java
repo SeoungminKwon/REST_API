@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/articles")
@@ -144,9 +147,19 @@ public class ApiV1ArticleController {
 
     @PostMapping("")
     public RsData< WriteArticleResponseBody > writeArticle(
-            @RequestBody WriteArticleRequestBody body
+            @RequestBody WriteArticleRequestBody body,
+            Principal principal
     ) {
         Member member = rq.getMember(); //현제는 rq.getMember가 1L로 고정 (추후 변경 예정)
+
+        //비로그인시 principal에 어떤 데이터가 들어갈까?
+        Optional.ofNullable(principal)
+                .ifPresentOrElse(
+                        p -> System.out.println("로그인 : " + p.getName()),
+                        () -> System.out.println("비로그인"));
+
+
+
         RsData< Article > writeRs = articleService.write(member, body.title, body.body);
 
         return writeRs.of(
