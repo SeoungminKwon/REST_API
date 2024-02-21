@@ -1,5 +1,8 @@
 package com.ll.restapi.domain.article.article.controller;
 
+import com.ll.restapi.domain.article.article.entity.Article;
+import com.ll.restapi.domain.article.article.service.ArticleService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ApiV1ArticleControllerTest {
     @Autowired //MockMvc인스턴스 자동 주입
     private MockMvc mvc;
+
+    @Autowired
+    private ArticleService articleService;
 
     //날짜 패턴 정규식
     private static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.?\\d{0,7}";
@@ -38,6 +46,7 @@ class ApiV1ArticleControllerTest {
         resultActions
                 .andExpect(status().isOk()) //HTTP 상태코드 검증
                 .andExpect(handler().handlerType(ApiV1ArticleController.class)) //요청 처리 클래스 ApiV1ArticleController인지 검증
+                .andExpect(handler().methodName("getArticles"))
                 .andExpect(jsonPath("$.data.items[0].id", instanceOf(Number.class))) // 값이 숫자인지 체크
                 .andExpect(jsonPath("$.data.items[0].createDate", matchesPattern(DATE_PATTERN)))
                 .andExpect(jsonPath("$.data.items[0].modifyDate", matchesPattern(DATE_PATTERN)))
@@ -45,5 +54,51 @@ class ApiV1ArticleControllerTest {
                 .andExpect(jsonPath("$.data.items[0].authorName", notNullValue())) //null이 아닌 값
                 .andExpect(jsonPath("$.data.items[0].title", notNullValue()))//null이 아닌 값
                 .andExpect(jsonPath("$.data.items[0].body", notNullValue()));//null이 아닌 값
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/articles/1")
+    void t2() throws Exception {
+        //WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/api/v1/articles/1")) //엔드포인트 get요청을 시뮬레이션
+                .andDo(print());//요청과 응답을 콘솔에 출력
+
+        //WEHN
+        resultActions
+                .andExpect(status().isOk()) //HTTP 상태코드 검증
+                .andExpect(handler().handlerType(ApiV1ArticleController.class)) //요청 처리 클래스 ApiV1ArticleController인지 검증
+                .andExpect(handler().methodName("getArticle"))
+                .andExpect(jsonPath("$.data.items[0].id", instanceOf(Number.class))) // 값이 숫자인지 체크
+                .andExpect(jsonPath("$.data.items[0].createDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.items[0].modifyDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.items[0].authorId", instanceOf(Number.class))) // 값이 숫자인지 체크
+                .andExpect(jsonPath("$.data.items[0].authorName", notNullValue())) //null이 아닌 값
+                .andExpect(jsonPath("$.data.items[0].title", notNullValue()))//null이 아닌 값
+                .andExpect(jsonPath("$.data.items[0].body", notNullValue()));//null이 아닌 값
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v1/articles/1")
+    void t3() throws Exception {
+        //WHEN
+        ResultActions resultActions = mvc
+                .perform(delete("/api/v1/articles/1")) //엔드포인트 delete 요청을 시뮬레이션
+                .andDo(print());//요청과 응답을 콘솔에 출력
+
+        //WEHN
+        resultActions
+                .andExpect(status().isOk()) //HTTP 상태코드 검증
+                .andExpect(handler().handlerType(ApiV1ArticleController.class)) //요청 처리 클래스 ApiV1ArticleController인지 검증
+                .andExpect(handler().methodName("removeArticle"))
+                .andExpect(jsonPath("$.data.item.id", instanceOf(Number.class))) // 값이 숫자인지 체크
+                .andExpect(jsonPath("$.data.item.createDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.item.modifyDate", matchesPattern(DATE_PATTERN)))
+                .andExpect(jsonPath("$.data.item.authorId", instanceOf(Number.class))) // 값이 숫자인지 체크
+                .andExpect(jsonPath("$.data.item.authorName", notNullValue())) //null이 아닌 값
+                .andExpect(jsonPath("$.data.item.title", notNullValue()))//null이 아닌 값
+                .andExpect(jsonPath("$.data.item.body", notNullValue()));//null이 아mArticle article1 = articleService.findById(1L).orElse(null);
+        Article article1 = articleService.findById(1L).orElse(null);
+        assertThat(article1).isNull();
     }
 }
