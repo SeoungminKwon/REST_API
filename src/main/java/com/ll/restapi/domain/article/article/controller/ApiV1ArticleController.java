@@ -147,15 +147,12 @@ public class ApiV1ArticleController {
             @RequestBody WriteArticleRequestBody body
     ) {
         Member member = rq.getMember(); //현제는 rq.getMember가 1L로 고정 (추후 변경 예정)
-        Article article = articleService.write(member, body.title, body.body).getData();
+        RsData< Article > writeRs = articleService.write(member, body.title, body.body);
 
-        return RsData.of(
-                "200",
-                "성공",
-                new WriteArticleResponseBody(
-                        article
-                )
+        return writeRs.of(
+                new WriteArticleResponseBody(writeRs.getData())
         );
     }
+
 
 }
