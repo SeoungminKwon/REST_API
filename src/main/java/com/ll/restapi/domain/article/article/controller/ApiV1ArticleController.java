@@ -4,6 +4,7 @@ import com.ll.restapi.domain.article.article.dto.ArticleDto;
 import com.ll.restapi.domain.article.article.entity.Article;
 import com.ll.restapi.domain.article.article.service.ArticleService;
 import com.ll.restapi.domain.member.member.entity.Member;
+import com.ll.restapi.domain.member.member.service.MemberService;
 import com.ll.restapi.global.rq.Rq;
 import com.ll.restapi.global.rsData.RsData;
 import lombok.Getter;
@@ -11,11 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/articles")
@@ -23,6 +22,7 @@ import java.util.Optional;
 public class ApiV1ArticleController {
     private final ArticleService articleService;
     private final Rq rq;
+    private final MemberService memberService;
 
     @Getter
     public static class GetArticlesResponseBody {
@@ -150,15 +150,9 @@ public class ApiV1ArticleController {
             @RequestBody WriteArticleRequestBody body,
             Principal principal
     ) {
-        Member member = rq.getMember(); //현제는 rq.getMember가 1L로 고정 (추후 변경 예정)
 
-        //비로그인시 principal에 어떤 데이터가 들어갈까?
-        Optional.ofNullable(principal)
-                .ifPresentOrElse(
-                        p -> System.out.println("로그인 : " + p.getName()), //Jwt필터에서 강제로 User넣으면 이걸로 진행
-                        () -> System.out.println("비로그인"));
-
-
+        Member member = rq.getMember(); //rq.getMember - security context에서 현제 로그인한 유저를 가져옴
+        member = memberService.findById(2L).get();
 
         RsData< Article > writeRs = articleService.write(member, body.title, body.body);
 

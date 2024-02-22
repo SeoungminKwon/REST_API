@@ -16,8 +16,8 @@ public class JwtUtil {
         //Claims 객체는 JWT 페이로드에 들어갈 여러 claims를 설정 할 수 있다.
         Claims claims = Jwts
                 .claims()
-                .setSubject("RESTAPI jwt") //토큰 이름
-                .add("type", data)
+                .setSubject("RESTAPI jwt")//토큰 이름
+                .add("data", data)
                 .build();
 
         Date now = new Date();
@@ -28,7 +28,6 @@ public class JwtUtil {
                 .setIssuedAt(now) // JWT 발행시간을 현제 시간으로 설정
                 .setExpiration(validity) //만료 시간 설정
                 //JWT는 키가 있으면 , JWT토큰에 해커가 장난질 쳤는지 안쳤는지 알 수 있음
-                //홰당 키는 JWT온라인에 등록을 해줘야함
                 .signWith(SignatureAlgorithm.HS512,
                         SECRET_KEY)
                 .compact();
