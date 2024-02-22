@@ -5,22 +5,22 @@ import com.ll.restapi.domain.member.member.entity.Member;
 import com.ll.restapi.domain.member.member.service.MemberService;
 import com.ll.restapi.global.rq.Rq;
 import com.ll.restapi.global.rsData.RsData;
+import com.ll.restapi.global.util.jwt.JwtUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
 public class ApiV1MemberController {
     private final MemberService memberService;
-    private final PasswordEncoder passwordEncoder;
     private final Rq rq;
 
     @Getter
@@ -33,9 +33,11 @@ public class ApiV1MemberController {
     @Getter
     public static class LoginResponseBody {
         private final MemberDto item;
+        private final String accessToken;
 
-        public LoginResponseBody(Member member) {
+        public LoginResponseBody(Member member, String accessToken) {
             this.item = new MemberDto(member);
+            this.accessToken = accessToken;
         }
     }
 
@@ -50,26 +52,14 @@ public class ApiV1MemberController {
 
         Member member = checkRs.getData();
 
+        Long id = member.getId();
+        String accessToken = JwtUtil.encode(Map.of("id", id.toString()));
+
+
         return RsData.of(
                 "200",
                 "로그인 성공",
-                new LoginResponseBody(
-                        member
-                )
-        );
-    }
-
-    //전 기기 로그아웃
-    @PreAuthorize("isAuthenticated()") // JwtAuthenticationFilter에서 시큐리티에 auth 객체를 넣어줘서 작동함
-    @PostMapping("/apiKey")
-    //타입의 유연성을 확보하기 위해서 ?(와일드 카드)를 작성함
-    public RsData< ? > regenApiKey() {
-        Member member = rq.getMember();
-
-        memberService.regenApiKey(member);
-        return RsData.of(
-                "200",
-                "해당 키가 재생성 되었습니다."
+                new LoginResponseBody(member, accessToken)
         );
     }
 }
