@@ -11,7 +11,7 @@ public class JwtUtil {
 
     private static final String SECRET_KEY = "abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890";
 
-    public static String encode(Map< String, String > data) {
+    public static String encode(Map< String, Object > data) {
         //jwt 내용 ?
         //Claims 객체는 JWT 페이로드에 들어갈 여러 claims를 설정 할 수 있다.
         Claims claims = Jwts

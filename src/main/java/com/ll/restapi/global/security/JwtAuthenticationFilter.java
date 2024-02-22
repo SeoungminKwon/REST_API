@@ -1,6 +1,5 @@
 package com.ll.restapi.global.security;
 
-import com.ll.restapi.domain.member.member.entity.Member;
 import com.ll.restapi.domain.member.member.service.MemberService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -29,13 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String apiKey = request.getHeader("X-ApiKey"); //사용자가 정의한 헤더는 X-??? 이런식으로 작성하는 것이 관례임
 
         if (apiKey != null) {
-            Member member = memberService.findByApiKey(apiKey).get();
-
-            User user = new User(
-                    String.valueOf(member.getId()), //User의 username 파람에 memberId를 넘김
-                    member.getPassword(),
-                    List.of()
-            );
+            User user = memberService.getUserFromAPiKey(apiKey);
 
             Authentication auth = new UsernamePasswordAuthenticationToken( //Authentication 객체 생성
                     user,

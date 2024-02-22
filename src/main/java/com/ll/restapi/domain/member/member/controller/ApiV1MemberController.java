@@ -53,7 +53,11 @@ public class ApiV1MemberController {
         Member member = checkRs.getData();
 
         Long id = member.getId();
-        String accessToken = JwtUtil.encode(Map.of("id", id.toString()));
+
+        String accessToken = JwtUtil.encode(Map.of(
+                "id", id.toString(),
+                "authorities", member.getAuthoritiesAsStrList()
+        ));
 
 
         return RsData.of(
